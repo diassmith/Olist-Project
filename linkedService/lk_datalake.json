@@ -1,0 +1,18 @@
+{
+	"name": "lk_datalake",
+	"properties": {
+		"annotations": [],
+		"type": "AzureBlobFS",
+		"typeProperties": {
+			"url": "https://adlsolist.dfs.core.windows.net/",
+			"accountKey": {
+				"type": "AzureKeyVaultSecret",
+				"store": {
+					"referenceName": "lk_akv",
+					"type": "LinkedServiceReference"
+				},
+				"secretName": "datalakekey"
+			}
+		}
+	}
+}
