@@ -1,0 +1,17 @@
+{
+	"name": "lk_sqlDB",
+	"properties": {
+		"annotations": [],
+		"type": "AzureSqlDatabase",
+		"typeProperties": {
+			"connectionString": {
+				"type": "AzureKeyVaultSecret",
+				"store": {
+					"referenceName": "lk_akv",
+					"type": "LinkedServiceReference"
+				},
+				"secretName": "sqlkey"
+			}
+		}
+	}
+}
