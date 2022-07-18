@@ -1,0 +1,10 @@
+{
+	"name": "lk_akv",
+	"properties": {
+		"annotations": [],
+		"type": "AzureKeyVault",
+		"typeProperties": {
+			"baseUrl": "https://akv-Olist.vault.azure.net/"
+		}
+	}
+}
