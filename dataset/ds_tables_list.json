@@ -1,0 +1,15 @@
+{
+	"name": "ds_tables_list",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "lk_sqlDB",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "landing"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": []
+	}
+}
