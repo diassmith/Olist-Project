@@ -4,6 +4,13 @@
 
 # COMMAND ----------
 
+# DBTITLE 1,Doing connection with data lake
+spark.conf.set(
+    "fs.azure.account.key.adlsolist.dfs.core.windows.net",
+    dbutils.secrets.get(scope="olistScope",key="datalakekey"))
+
+# COMMAND ----------
+
 # DBTITLE 1,Authenticating in Data Lake storage
 configs = {"fs.azure.account.auth.type": "OAuth",
           "fs.azure.account.oauth.provider.type": "org.apache.hadoop.fs.azurebfs.oauth2.ClientCredsTokenProvider",
@@ -14,6 +21,8 @@ configs = {"fs.azure.account.auth.type": "OAuth",
 
 # COMMAND ----------
 
+# DBTITLE 1,Creating the 3 layers
+#setting the layers that you would like create
 layers = ["landing", "processing", "curated"]
 for layer in layers:
     try:
@@ -26,12 +35,17 @@ for layer in layers:
 
 # COMMAND ----------
 
+# DBTITLE 1,checking the mnt
 # MAGIC %fs ls /mnt/
 
 # COMMAND ----------
 
-dbutils.fs.unmount("/mnt/")
+# DBTITLE 1,removing
+#dbutils.fs.unmount("/mnt/landing")
+#dbutils.fs.unmount("/mnt/processing")
+#dbutils.fs.unmount("/mnt/curated")
 
 # COMMAND ----------
 
+# DBTITLE 1,Checking the landing
 dbutils.fs.ls("/mnt/landing")
