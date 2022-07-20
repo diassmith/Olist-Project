@@ -158,14 +158,7 @@
 			{
 				"name": "CopyData_orderItems",
 				"type": "Copy",
-				"dependsOn": [
-					{
-						"activity": "CopyData_geolocation",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
+				"dependsOn": [],
 				"policy": {
 					"timeout": "7.00:00:00",
 					"retry": 0,
@@ -318,14 +311,7 @@
 			{
 				"name": "CopyData_ordersReviews",
 				"type": "Copy",
-				"dependsOn": [
-					{
-						"activity": "CopyData_orderPayments",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
+				"dependsOn": [],
 				"policy": {
 					"timeout": "7.00:00:00",
 					"retry": 0,
@@ -478,14 +464,7 @@
 			{
 				"name": "CopyData_products",
 				"type": "Copy",
-				"dependsOn": [
-					{
-						"activity": "CopyData_orders",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
+				"dependsOn": [],
 				"policy": {
 					"timeout": "7.00:00:00",
 					"retry": 0,
