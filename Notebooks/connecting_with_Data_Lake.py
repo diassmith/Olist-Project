@@ -23,7 +23,7 @@ configs = {"fs.azure.account.auth.type": "OAuth",
 
 # DBTITLE 1,Creating the 3 layers
 #setting the layers that you would like create
-layers = ["landing", "processing", "curated"]
+layers = ["bronze", "silver", "gold"]
 for layer in layers:
     try:
         dbutils.fs.mount(
@@ -48,4 +48,4 @@ for layer in layers:
 # COMMAND ----------
 
 # DBTITLE 1,Checking the landing
-dbutils.fs.ls("/mnt/landing")
+dbutils.fs.ls("/mnt/bronze")
