@@ -1,5 +1,5 @@
 {
-	"name": "ds_db_source",
+	"name": "ds_source",
 	"properties": {
 		"linkedServiceName": {
 			"referenceName": "lk_sqlDB",
@@ -14,7 +14,7 @@
 			}
 		},
 		"folder": {
-			"name": "landing"
+			"name": "bronze"
 		},
 		"annotations": [],
 		"type": "AzureSqlTable",
@@ -29,6 +29,5 @@
 				"type": "Expression"
 			}
 		}
-	},
-	"type": "Microsoft.DataFactory/factories/datasets"
+	}
 }

@@ -1,0 +1,620 @@
+{
+	"name": "pl_ingestion_bronze",
+	"properties": {
+		"activities": [
+			{
+				"name": "CopyData_customer",
+				"type": "Copy",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "AzureSqlSource",
+						"additionalColumns": [
+							{
+								"name": "dtLoad",
+								"value": {
+									"value": "@utcNow()",
+									"type": "Expression"
+								}
+							},
+							{
+								"name": "fileName",
+								"value": {
+									"value": "olist_customers_dataset",
+									"type": "Expression"
+								}
+							}
+						],
+						"queryTimeout": "02:00:00",
+						"partitionOption": "None"
+					},
+					"sink": {
+						"type": "ParquetSink",
+						"storeSettings": {
+							"type": "AzureBlobFSWriteSettings"
+						},
+						"formatSettings": {
+							"type": "ParquetWriteSettings"
+						}
+					},
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"typeConversion": true,
+						"typeConversionSettings": {
+							"allowDataTruncation": true,
+							"treatBooleanAsNumber": false
+						}
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "ds_source",
+						"type": "DatasetReference",
+						"parameters": {
+							"schema": "dbo",
+							"tableName": "olist_customers_dataset"
+						}
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "ds_bronze",
+						"type": "DatasetReference",
+						"parameters": {
+							"fs": "customer"
+						}
+					}
+				]
+			},
+			{
+				"name": "CopyData_geolocation",
+				"type": "Copy",
+				"dependsOn": [
+					{
+						"activity": "CopyData_customer",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "AzureSqlSource",
+						"additionalColumns": [
+							{
+								"name": "dtLoad",
+								"value": {
+									"value": "@utcNow()",
+									"type": "Expression"
+								}
+							},
+							{
+								"name": "fileName",
+								"value": {
+									"value": "olist_geolocation_dataset",
+									"type": "Expression"
+								}
+							}
+						],
+						"queryTimeout": "02:00:00",
+						"partitionOption": "None"
+					},
+					"sink": {
+						"type": "ParquetSink",
+						"storeSettings": {
+							"type": "AzureBlobFSWriteSettings"
+						},
+						"formatSettings": {
+							"type": "ParquetWriteSettings"
+						}
+					},
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"typeConversion": true,
+						"typeConversionSettings": {
+							"allowDataTruncation": true,
+							"treatBooleanAsNumber": false
+						}
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "ds_source",
+						"type": "DatasetReference",
+						"parameters": {
+							"schema": "dbo",
+							"tableName": "olist_geolocation_dataset"
+						}
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "ds_bronze",
+						"type": "DatasetReference",
+						"parameters": {
+							"fs": "geolocation"
+						}
+					}
+				]
+			},
+			{
+				"name": "CopyData_orderItems",
+				"type": "Copy",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "AzureSqlSource",
+						"additionalColumns": [
+							{
+								"name": "dtLoad",
+								"value": {
+									"value": "@utcNow()",
+									"type": "Expression"
+								}
+							},
+							{
+								"name": "fileName",
+								"value": {
+									"value": "olist_order_items_dataset",
+									"type": "Expression"
+								}
+							}
+						],
+						"queryTimeout": "02:00:00",
+						"partitionOption": "None"
+					},
+					"sink": {
+						"type": "ParquetSink",
+						"storeSettings": {
+							"type": "AzureBlobFSWriteSettings"
+						},
+						"formatSettings": {
+							"type": "ParquetWriteSettings"
+						}
+					},
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"typeConversion": true,
+						"typeConversionSettings": {
+							"allowDataTruncation": true,
+							"treatBooleanAsNumber": false
+						}
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "ds_source",
+						"type": "DatasetReference",
+						"parameters": {
+							"schema": "dbo",
+							"tableName": "olist_order_items_dataset"
+						}
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "ds_bronze",
+						"type": "DatasetReference",
+						"parameters": {
+							"fs": "orderItems"
+						}
+					}
+				]
+			},
+			{
+				"name": "CopyData_orderPayments",
+				"type": "Copy",
+				"dependsOn": [
+					{
+						"activity": "CopyData_orderItems",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "AzureSqlSource",
+						"additionalColumns": [
+							{
+								"name": "dtLoad",
+								"value": {
+									"value": "@utcNow()",
+									"type": "Expression"
+								}
+							},
+							{
+								"name": "fileName",
+								"value": {
+									"value": "olist_order_payments_dataset",
+									"type": "Expression"
+								}
+							}
+						],
+						"queryTimeout": "02:00:00",
+						"partitionOption": "None"
+					},
+					"sink": {
+						"type": "ParquetSink",
+						"storeSettings": {
+							"type": "AzureBlobFSWriteSettings"
+						},
+						"formatSettings": {
+							"type": "ParquetWriteSettings"
+						}
+					},
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"typeConversion": true,
+						"typeConversionSettings": {
+							"allowDataTruncation": true,
+							"treatBooleanAsNumber": false
+						}
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "ds_source",
+						"type": "DatasetReference",
+						"parameters": {
+							"schema": "dbo",
+							"tableName": "olist_order_payments_dataset"
+						}
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "ds_bronze",
+						"type": "DatasetReference",
+						"parameters": {
+							"fs": "orderPayments"
+						}
+					}
+				]
+			},
+			{
+				"name": "CopyData_ordersReviews",
+				"type": "Copy",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "AzureSqlSource",
+						"additionalColumns": [
+							{
+								"name": "dtLoad",
+								"value": {
+									"value": "@utcNow()",
+									"type": "Expression"
+								}
+							},
+							{
+								"name": "fileName",
+								"value": {
+									"value": "olist_order_reviews_dataset",
+									"type": "Expression"
+								}
+							}
+						],
+						"queryTimeout": "02:00:00",
+						"partitionOption": "None"
+					},
+					"sink": {
+						"type": "ParquetSink",
+						"storeSettings": {
+							"type": "AzureBlobFSWriteSettings"
+						},
+						"formatSettings": {
+							"type": "ParquetWriteSettings"
+						}
+					},
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"typeConversion": true,
+						"typeConversionSettings": {
+							"allowDataTruncation": true,
+							"treatBooleanAsNumber": false
+						}
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "ds_source",
+						"type": "DatasetReference",
+						"parameters": {
+							"schema": "dbo",
+							"tableName": "olist_order_reviews_dataset"
+						}
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "ds_bronze",
+						"type": "DatasetReference",
+						"parameters": {
+							"fs": "orderReviews"
+						}
+					}
+				]
+			},
+			{
+				"name": "CopyData_orders",
+				"type": "Copy",
+				"dependsOn": [
+					{
+						"activity": "CopyData_ordersReviews",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "AzureSqlSource",
+						"additionalColumns": [
+							{
+								"name": "dtLoad",
+								"value": {
+									"value": "@utcNow()",
+									"type": "Expression"
+								}
+							},
+							{
+								"name": "fileName",
+								"value": {
+									"value": "olist_order_reviews_dataset",
+									"type": "Expression"
+								}
+							}
+						],
+						"queryTimeout": "02:00:00",
+						"partitionOption": "None"
+					},
+					"sink": {
+						"type": "ParquetSink",
+						"storeSettings": {
+							"type": "AzureBlobFSWriteSettings"
+						},
+						"formatSettings": {
+							"type": "ParquetWriteSettings"
+						}
+					},
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"typeConversion": true,
+						"typeConversionSettings": {
+							"allowDataTruncation": true,
+							"treatBooleanAsNumber": false
+						}
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "ds_source",
+						"type": "DatasetReference",
+						"parameters": {
+							"schema": "dbo",
+							"tableName": "olist_order_reviews_dataset"
+						}
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "ds_bronze",
+						"type": "DatasetReference",
+						"parameters": {
+							"fs": "orders"
+						}
+					}
+				]
+			},
+			{
+				"name": "CopyData_products",
+				"type": "Copy",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "AzureSqlSource",
+						"additionalColumns": [
+							{
+								"name": "dtLoad",
+								"value": {
+									"value": "@utcNow()",
+									"type": "Expression"
+								}
+							},
+							{
+								"name": "fileName",
+								"value": {
+									"value": "olist_products_dataset",
+									"type": "Expression"
+								}
+							}
+						],
+						"queryTimeout": "02:00:00",
+						"partitionOption": "None"
+					},
+					"sink": {
+						"type": "ParquetSink",
+						"storeSettings": {
+							"type": "AzureBlobFSWriteSettings"
+						},
+						"formatSettings": {
+							"type": "ParquetWriteSettings"
+						}
+					},
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"typeConversion": true,
+						"typeConversionSettings": {
+							"allowDataTruncation": true,
+							"treatBooleanAsNumber": false
+						}
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "ds_source",
+						"type": "DatasetReference",
+						"parameters": {
+							"schema": "dbo",
+							"tableName": "olist_products_dataset"
+						}
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "ds_bronze",
+						"type": "DatasetReference",
+						"parameters": {
+							"fs": "products"
+						}
+					}
+				]
+			},
+			{
+				"name": "CopyData_sellers",
+				"type": "Copy",
+				"dependsOn": [
+					{
+						"activity": "CopyData_products",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "AzureSqlSource",
+						"additionalColumns": [
+							{
+								"name": "dtLoad",
+								"value": {
+									"value": "@utcNow()",
+									"type": "Expression"
+								}
+							},
+							{
+								"name": "fileName",
+								"value": {
+									"value": "olist_sellers_dataset",
+									"type": "Expression"
+								}
+							}
+						],
+						"queryTimeout": "02:00:00",
+						"partitionOption": "None"
+					},
+					"sink": {
+						"type": "ParquetSink",
+						"storeSettings": {
+							"type": "AzureBlobFSWriteSettings"
+						},
+						"formatSettings": {
+							"type": "ParquetWriteSettings"
+						}
+					},
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"typeConversion": true,
+						"typeConversionSettings": {
+							"allowDataTruncation": true,
+							"treatBooleanAsNumber": false
+						}
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "ds_source",
+						"type": "DatasetReference",
+						"parameters": {
+							"schema": "dbo",
+							"tableName": "olist_sellers_dataset"
+						}
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "ds_bronze",
+						"type": "DatasetReference",
+						"parameters": {
+							"fs": "sellers"
+						}
+					}
+				]
+			}
+		],
+		"annotations": []
+	}
+}
